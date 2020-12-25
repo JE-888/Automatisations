@@ -1,15 +1,13 @@
-$FolderName = Read-Host -Prompt "Enter your folder name "
-$IsCompressed = Read-Host -Prompt "Do you want to create a compressed folder ? (y/n) "
-If (!(Test-Path -Path ./$FolderName)){New-Item -ItemType Directory -Name $FolderName}
+$TargetPath = Read-Host -Prompt "Enter the path of the folder you want to save "
+Set-Location -Path $TargetPath
+If (!(Test-Path -Path ./save)){New-Item -ItemType Directory -Name save}
 
 Get-ChildItem |
 ForEach-Object {
-    If ($PSItem.Name -ne $FolderName -and $PSItem.Name -ne "Sauvegarde.ps1"){
-    Copy-Item -Path $PSItem -Destination ./$FolderName -Recurse
+    If ($PSItem.Name -ne "save" -and $PSItem.Name -ne "Sauvegarde.ps1"){
+    Copy-Item -Path $PSItem -Destination ./save -Recurse
     }
 }
 
-If ($IsCompressed -ne "n"){
-    Compress-Archive -Path $FolderName -CompressionLevel "Fastest" -DestinationPath $FolderName
-    Remove-Item -Path $FolderName -Recurse
-}
+Compress-Archive -Path save -CompressionLevel "Fastest" -DestinationPath save -Force
+Remove-Item -Path save -Recurse
